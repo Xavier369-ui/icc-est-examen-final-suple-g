@@ -1,10 +1,10 @@
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import Controller.ProductoController;
-import Modelo.Producto;
-
-
+import controllers.ProductoController;
+import models.Producto;
 
 public class Main {
     public static void main(String[] args) {
@@ -41,9 +41,40 @@ public class Main {
                 new Producto("Soporte Celular", "029", Arrays.asList(10.0, 12.0, 10.0, 15.0, 12.0)),
                 new Producto("Ventilador USB", "030", Arrays.asList(8.0, 10.0, 8.0, 12.0, 10.0))
 
-                ProductoController controller = new ProductoController();
+                
 
         );
+        ProductoController controller = new ProductoController();
+        
+
+        
+        Set<Producto> productosOrdenados = controller.ordenarProducto(lista);
+        productosOrdenados.forEach(p -> System.out.println(p.getNombre() + " (" + p.getCodigo() + ")"));
+
+        
+        Map<String, List<Producto>> clasificacion = controller.clasificarPorUnicidad(productosOrdenados);
+        clasificacion.forEach((categoria, productos) -> {
+            System.out.println(categoria + ": " + productos.stream()
+                    .map(Producto::getNombre)
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse(""));
+        });
+
+        
+        List<Producto> destacados = controller.obtenerDestacados(lista);
+        destacados.forEach(p -> System.out.println("- " + p.getNombre() + 
+                " (Repeticiones: " + p.getCatidadPreciosRepetidos() + ")"));
+
+        
+        String nombreBuscado = "Teclado Inalámbrico";
+        Producto encontrado = controller.buscarPorNombre(lista, nombreBuscado);
+        if (encontrado != null) {
+            System.out.println("Producto encontrado: " + encontrado.getNombre() + 
+                    " (" + encontrado.getCodigo() + ")");
+        } else {
+            System.out.println("Producto no encontrado: " + nombreBuscado);
+        }
+    
 
     }
 }
